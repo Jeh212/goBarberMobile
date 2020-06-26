@@ -26,6 +26,8 @@ import Input from '../../components/Input/index';
 import Button from '../../components/Button/index';
 import getValidationErrors from '../../utils/getValidationErros';
 import * as Yup from 'yup';
+import { useAuth} from '../../hooks/AuthContext'
+
 
 interface SignInFormData {
   email: string;
@@ -35,6 +37,8 @@ interface SignInFormData {
 const Signin: React.FC = () => {
   const navigation = useNavigation();
 
+ const {signIn,user} = useAuth();
+ console.log(user)
   const handleSignIn = useCallback(async (data: SignInFormData) => {
     //Validações//
     try {
@@ -51,10 +55,10 @@ const Signin: React.FC = () => {
         abortEarly: false,
       });
 
-      // await signIn({
-      //   email: data.email,
-      //   password: data.password,
-      // });
+      await signIn({
+        email: data.email,
+        password: data.password,
+      });
     } catch (err) {
       if (err instanceof Yup.ValidationError) {
         const errors = getValidationErrors(err);
@@ -69,7 +73,7 @@ const Signin: React.FC = () => {
         'Ocorreu um erro ao fazer Login cheque as credenciais',
       );
     }
-  }, []);
+  }, [signIn]);
 
   const passwordRef = useRef<TextInput>(null);
   const formRef = useRef<FormHandles>(null);
